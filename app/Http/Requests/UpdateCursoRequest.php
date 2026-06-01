@@ -35,7 +35,15 @@ class UpdateCursoRequest extends FormRequest
             // 🔀 Validación cruzada de carreras
             'todas_las_carreras' => ['required_without:carreras', 'boolean'],
             'carreras' => ['required_without:todas_las_carreras', 'array', 'min:1'],
+
+            'imagen' => [
+    'nullable',
+    'image',
+    'mimes:jpg,jpeg,png,webp',
+    'max:2048'
+],
         ];
+
     }
 
     /**

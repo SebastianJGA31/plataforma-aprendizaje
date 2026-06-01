@@ -61,4 +61,12 @@ public function carrera()
 {
     return $this->hasMany(Curso::class, 'instructor_id');
 }
+
+public function inscripciones()
+{
+    return $this->hasMany(
+        Inscripcion::class,
+        'alumno_id'
+    );
+}
 }

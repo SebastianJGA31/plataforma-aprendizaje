@@ -1,71 +1,82 @@
 <x-app-layout>
+    <div class="container mt-4">
+        <h2>Cursos Disponibles</h2>
 
-<div class="container mt-4">
+        <div class="row">
+            @forelse($cursos as $curso)
+                <div class="col-md-4 mb-4"> <div class="card shadow h-100">
+                        <div class="card-body">
 
-    <h2>
+                        @if($curso->imagen)
 
-        Cursos Disponibles
+<img
+    src="{{ asset(
+        'storage/'.$curso->imagen
+    ) }}"
+    class="card-img-top"
+    style="
+        height:220px;
+        object-fit:cover;
+    ">
 
-    </h2>
+@endif
+                            <h5 class="card-title">{{ $curso->titulo }}</h5>
+                            
+                            <p class="text-muted">
+                                {{ Str::limit($curso->descripcion, 100) }}
+                            </p>
 
-    <div class="row">
+                            <div class="mb-2">
+                                <span class="badge bg-primary">{{ $curso->tipo }}</span>
+                                <span class="badge bg-info">{{ $curso->modalidad }}</span>
+                            </div>
 
-        @forelse($cursos as $curso)
+                            <div class="mb-2">
+                                @if($curso->estado == 'Activo')
+                                    <span class="badge bg-success">Activo</span>
+                                @elseif($curso->estado == 'Cerrado')
+                                    <span class="badge bg-warning text-dark">Cerrado</span>
+                                @elseif($curso->estado == 'Finalizado')
+                                    <span class="badge bg-secondary">Finalizado</span>
+                                @else
+                                    <span class="badge bg-danger">Cancelado</span>
+                                @endif
+                            </div>
 
-        <div class="col-md-4 mb-4">
+                            <p><strong>Instructor:</strong> {{ $curso->instructor->name }}</p>
+                            <p><strong>Cupo:</strong> {{ $curso->cupo_maximo }}</p>
+                            <p><strong>Inicio:</strong> {{ $curso->fecha_inicio }}</p>
+                        </div>
 
-            <div class="card shadow">
+                        <div class="card-footer bg-white">
+                            <a href="{{ route(
+    'alumno.cursos.show',
+    $curso
+) }}" class="btn btn-primary">Detalles</a>
 
-                <div class="card-body">
+                            @php
+                                $inscrito = $curso->inscripciones()
+                                    ->where('alumno_id', auth()->id())
+                                    ->exists();
+                            @endphp
 
-                    <h5>
-
-                        {{ $curso->titulo }}
-
-                    </h5>
-
-                    <p>
-
-                        {{ $curso->descripcion }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>
-                            Instructor:
-                        </strong>
-
-                        {{ $curso->instructor->name }}
-
-                    </p>
-
-                    <a href="#"
-                       class="btn btn-primary">
-
-                        Ver Detalles
-
-                    </a>
-
+                            @if($inscrito)
+                                <button class="btn btn-secondary" disabled>Ya inscrito</button>
+                            @else
+                                <a href="{{ route('alumno.inscripciones.create', $curso) }}" class="btn btn-success">
+                                    Inscribirme
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-
-            </div>
-
+            @empty
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        No hay cursos disponibles.
+                    </div>
+                </div>
+            @endforelse
         </div>
-
-        @empty
-
-        <div class="alert alert-info">
-
-            No hay cursos
-            disponibles.
-
-        </div>
-
-        @endforelse
-
     </div>
-
-</div>
-
 </x-app-layout>

@@ -24,6 +24,7 @@ class Curso extends Model
         'requiere_aprobacion',
         'permite_resenas',
         'todas_las_carreras',
+        'imagen',
         'estado'
     ];
 
@@ -37,6 +38,13 @@ class Curso extends Model
     return $this->belongsToMany(
         Carrera::class,
         'carrera_curso'
+    );
+}
+
+public function inscripciones()
+{
+    return $this->hasMany(
+        Inscripcion::class
     );
 }
 }

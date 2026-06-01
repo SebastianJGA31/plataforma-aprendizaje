@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Carrera;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
@@ -148,58 +149,35 @@ public function store(StoreUserRequest $request)
     );
 }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $usuario)
+    
+/**
+ * Update the specified resource in storage.
+ */
+public function update(UpdateUserRequest $request, User $usuario)
 {
+
     $usuario->update([
-
-        'name' =>
-            $request->name,
-
-        'numero_control' =>
-            $request->numero_control,
-
-        'email' =>
-            $request->email,
-
-        'rol_id' =>
-            $request->rol_id,
-
-        'carrera_id' =>
-            $request->carrera_id,
-
-        'semestre' =>
-            $request->semestre,
-
-        'telefono' =>
-            $request->telefono
-
+        'name'           => $request->name,
+        'numero_control' => $request->numero_control,
+        'email'          => $request->email,
+        'rol_id'         => $request->rol_id,
+        'carrera_id'     => $request->carrera_id,
+        'semestre'       => $request->semestre,
+        'telefono'       => $request->telefono
     ]);
 
-    if($request->filled('password'))
-    {
+    // Si el usuario escribió algo en el campo de contraseña, la actualizamos
+    if ($request->filled('password')) {
         $usuario->update([
-
-            'password' =>
-                bcrypt(
-                    $request->password
-                )
-
+            'password' => Hash::make($request->password) // Usamos Hash::make para mantener consistencia con el store
         ]);
     }
 
     return redirect()
         ->route('usuarios.index')
-        ->with(
-            'success',
-            'Usuario actualizado correctamente'
-        );
+        ->with('success', 'Usuario actualizado correctamente');
 }
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(User $usuario)
 {
     $usuario->delete();

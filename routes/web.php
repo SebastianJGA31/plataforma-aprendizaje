@@ -9,6 +9,7 @@ use App\Http\Controllers\Alumno\CursoController as AlumnoCursoController;
 use App\Http\Controllers\CursoController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Alumno\InscripcionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -56,17 +57,51 @@ Route::middleware(['auth', 'role:Maestro'])
 
         Route::get('/dashboard', [MaestroDashboardController::class, 'index'])
             ->name('maestro.dashboard');
+
+            Route::get(
+    '/inscripciones',
+    [\App\Http\Controllers\Maestro\InscripcionController::class,'index']
+)->name('maestro.inscripciones.index');
+
+Route::patch(
+    '/inscripciones/{inscripcion}/aprobar',
+    [\App\Http\Controllers\Maestro\InscripcionController::class,'aprobar']
+)->name('maestro.inscripciones.aprobar');
+
+Route::patch(
+    '/inscripciones/{inscripcion}/rechazar',
+    [\App\Http\Controllers\Maestro\InscripcionController::class,'rechazar']
+)->name('maestro.inscripciones.rechazar');
+
+Route::patch(
+    '/inscripciones/{inscripcion}/baja',
+    [\App\Http\Controllers\Maestro\InscripcionController::class,'darBaja']
+)->name('maestro.inscripciones.baja');
     });
+
 
 Route::middleware(['auth', 'role:Alumno'])
     ->prefix('alumno')
     ->group(function () {
 
-        Route::get('/dashboard', [AlumnoDashboardController::class, 'index'])
-            ->name('alumno.dashboard');
+        Route::get('/dashboard', [AlumnoDashboardController::class, 'index']) ->name('alumno.dashboard');
 
-        Route::get('/cursos', [AlumnoCursoController::class, 'index'])
-            ->name('alumno.cursos'); 
-    });
+        Route::get('/cursos', [AlumnoCursoController::class, 'index']) ->name('alumno.cursos'); 
+
+        Route::get('/cursos/{curso}/inscribirse', [InscripcionController::class,'create'])->name('alumno.inscripciones.create');
+        
+        Route::post('/cursos/{curso}/inscribirse',[InscripcionController::class,'store'])->name('alumno.inscripciones.store');
+        
+        Route::get( '/mis-inscripciones',
+    [InscripcionController::class,'index']
+)->name('alumno.inscripciones.index');
+
+Route::get(
+    '/cursos/{curso}',
+    [\App\Http\Controllers\Alumno\CursoController::class,'show']
+)->name('alumno.cursos.show');
+    
+        });
+
 
 require __DIR__ . '/auth.php';

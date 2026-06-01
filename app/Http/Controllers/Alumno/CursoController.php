@@ -43,4 +43,17 @@ $carreraId = Auth::user()->carrera_id;
 
 return view('alumno.index', compact('cursos')); // 🚨 Quitamos el ".cursos"
     }
+
+    public function show(Curso $curso)
+{
+    $curso->load([
+        'instructor',
+        'carreras'
+    ]);
+
+    return view(
+        'alumno.show',
+        compact('curso')
+    );
+}
 }
