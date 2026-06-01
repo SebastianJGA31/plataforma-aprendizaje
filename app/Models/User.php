@@ -2,27 +2,37 @@
 
 namespace App\Models;
 
+use App\Models\Curso;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notifiable;use App\Models\Role;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    public function role()
+{
+    return $this->belongsTo(Role::class, 'rol_id');
+}
+
+public function carrera()
+{
+    return $this->belongsTo(Carrera::class);
+}
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    'name',
+    'numero_control',
+    'email',
+    'password',
+    'rol_id',
+    'carrera_id',
+    'semestre',
+    'telefono'
+];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,4 +56,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function cursos()
+{
+    return $this->hasMany(Curso::class, 'instructor_id');
+}
 }
