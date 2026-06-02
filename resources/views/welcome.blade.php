@@ -13,7 +13,6 @@
             flex-direction: column;
         }
 
-        /* ── Navbar institucional ── */
         .navbar-institucional {
             background-color: #8B1A1A;
             border-bottom: 3px solid #FFD700;
@@ -39,7 +38,6 @@
             object-fit: contain;
         }
 
-        /* ── Panel izquierdo institucional ── */
         .panel-institucional {
             background: linear-gradient(160deg, #6B0F0F 0%, #8B1A1A 50%, #A52929 100%);
             min-height: calc(100vh - 67px);
@@ -114,7 +112,6 @@
             text-transform: uppercase;
         }
 
-        /* ── Panel derecho (login) ── */
         .panel-login {
             min-height: calc(100vh - 67px);
             display: flex;
@@ -199,7 +196,6 @@
             border-color: #8B1A1A;
         }
 
-        /* Responsive: en móvil el panel institucional es solo banner */
         @media (max-width: 991.98px) {
             .panel-institucional {
                 min-height: auto;

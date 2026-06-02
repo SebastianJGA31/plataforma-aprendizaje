@@ -12,9 +12,7 @@ use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
 {
     $usuarios = User::with([
@@ -59,9 +57,6 @@ class UserController extends Controller
     );
 }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
 {
     $roles = Role::all();
@@ -77,9 +72,6 @@ class UserController extends Controller
     );
 }
 
-    /**
-     * Store a newly created resource in storage.
-     */
 public function store(StoreUserRequest $request)
 {
     User::create([
@@ -120,9 +112,7 @@ public function store(StoreUserRequest $request)
         );
 }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         // ⚡ LLENADO: Buscamos al usuario con sus relaciones cargadas
@@ -132,9 +122,6 @@ public function store(StoreUserRequest $request)
         return view('usuarios.show', compact('usuario'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
    public function edit(User $usuario)
 {
     $roles = Role::all();
@@ -151,10 +138,7 @@ public function store(StoreUserRequest $request)
     );
 }
 
-    
-/**
- * Update the specified resource in storage.
- */
+
 public function update(UpdateUserRequest $request, User $usuario)
 {
 

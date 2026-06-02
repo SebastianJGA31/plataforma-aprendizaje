@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
         $rolMaestro = Role::where('nombre', 'Maestro')->value('id');
         $rolAlumno = Role::where('nombre', 'Alumno')->value('id');
 
-        // 1. Usuario Administrador
         User::firstOrCreate(
             ['email' => 'admin@itcv.edu.mx'],
             [
@@ -35,7 +34,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Usuario Maestro
         User::firstOrCreate(
             ['email' => 'maestro@itcv.edu.mx'],
             [
@@ -47,7 +45,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 3. Usuario Alumno
         User::firstOrCreate(
             ['email' => 'alumno@itcv.edu.mx'],
             [

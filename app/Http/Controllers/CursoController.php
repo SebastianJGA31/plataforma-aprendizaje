@@ -17,9 +17,7 @@ class CursoController extends Controller
 
         return User::where('rol_id', $rolMaestro)->orderBy('name')->get();
     }
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
 {
     $cursos = Curso::with([
@@ -103,9 +101,6 @@ class CursoController extends Controller
     );
 }
 
-    /**
-     * Store a newly created resource in storage.
-     */
 public function store(StoreCursoRequest $request)
 {
     $imagen = null;
@@ -174,9 +169,6 @@ if (!$request->has('todas_las_carreras')) {
         );
 }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Curso $curso)
 {
     $maestros = $this->getMaestros();
@@ -195,9 +187,6 @@ if (!$request->has('todas_las_carreras')) {
     );
 }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Curso $curso)
 {
     $maestros = $this->getMaestros();
@@ -216,12 +205,7 @@ if (!$request->has('todas_las_carreras')) {
     );
 }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    /**
- * Update the specified resource in storage.
- */
+
 public function update(UpdateCursoRequest $request, Curso $curso)
 {
     if(
@@ -270,9 +254,7 @@ public function update(UpdateCursoRequest $request, Curso $curso)
         ->route('cursos.index')
         ->with('success', 'Curso actualizado correctamente');
 }
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(Curso $curso)
 {
     $curso->delete();
