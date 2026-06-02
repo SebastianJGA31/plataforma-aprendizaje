@@ -5,26 +5,53 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Plataforma ITCV') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        <!-- Scripts -->
+        {{-- Vite: mantiene los estilos y scripts de Breeze compilados --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+        <style>
+            body {
+                background-color: #f0f2f5;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .guest-content {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2.5rem 1rem;
+            }
+            .guest-card {
+                width: 100%;
+                max-width: 460px;
+                background: #fff;
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 6px 32px rgba(0,0,0,0.11);
+                padding: 2rem 2.2rem;
+            }
+        </style>
+    </head>
+    <body>
+
+        @include('layouts.partials.navbar-institucional')
+
+        <div class="guest-content">
+            <div class="guest-card">
                 {{ $slot }}
             </div>
         </div>
+
+        <footer class="text-center py-2"
+                style="background:#8B1A1A; color:rgba(255,255,255,0.6); font-size:0.78rem;">
+            Instituto Tecnológico de Ciudad Victoria &copy; {{ date('Y') }}
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

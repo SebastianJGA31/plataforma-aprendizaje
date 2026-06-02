@@ -20,18 +20,43 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $rolAdmin = Role::where('nombre', 'Administrador')->value('id');
+        $rolMaestro = Role::where('nombre', 'Maestro')->value('id');
+        $rolAlumno = Role::where('nombre', 'Alumno')->value('id');
 
+        // 1. Usuario Administrador
         User::firstOrCreate(
-            ['email' => 'admin@plataforma.com'],
+            ['email' => 'admin@itcv.edu.mx'],
             [
-                'name' => 'Administrador',
-                'numero_control' => '10000001',
-                'password' => Hash::make('admin123'),
+                'name' => 'Administrador ITCV',
+                'numero_control' => 'ADMIN001',
+                'password' => Hash::make('password123'),
                 'rol_id' => $rolAdmin,
-                'telefono' => '5500000000',
+                'telefono' => '8340000000',
             ]
         );
 
-        $this->call(DemoSeeder::class);
+        // 2. Usuario Maestro
+        User::firstOrCreate(
+            ['email' => 'maestro@itcv.edu.mx'],
+            [
+                'name' => 'Maestro de Prueba',
+                'numero_control' => 'DOCENTE001',
+                'password' => Hash::make('password123'),
+                'rol_id' => $rolMaestro,
+                'telefono' => '8340000001',
+            ]
+        );
+
+        // 3. Usuario Alumno
+        User::firstOrCreate(
+            ['email' => 'alumno@itcv.edu.mx'],
+            [
+                'name' => 'Alumno de Prueba',
+                'numero_control' => 'ALUMNO001',
+                'password' => Hash::make('password123'),
+                'rol_id' => $rolAlumno,
+                'telefono' => '8340000002',
+            ]
+        );
     }
 }

@@ -34,16 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="card shadow border-danger mb-4">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="mb-0">Eliminar cuenta</h5>
-                    </div>
-                    <div class="card-body">
-                        @include('profile.partials.delete-user-form')
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 </x-app-layout>

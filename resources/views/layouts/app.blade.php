@@ -15,6 +15,8 @@
     </head>
     <body>
 
+@include('layouts.partials.navbar-institucional')
+
 <div class="container-fluid">
     <div class="row">
 
