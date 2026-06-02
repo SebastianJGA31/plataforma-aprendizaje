@@ -79,13 +79,17 @@
                             </p>
 
                             <p>
-
-                                <strong>
-                                    Cupo:
-                                </strong>
-
+                                <strong>Cupo total:</strong>
                                 {{ $curso->cupo_maximo }}
+                            </p>
 
+                            <p>
+                                <strong>Cupos disponibles:</strong>
+                                @if($curso->cuposDisponibles() > 0)
+                                    <span class="badge bg-success">{{ $curso->cuposDisponibles() }}</span>
+                                @else
+                                    <span class="badge bg-danger">Lleno</span>
+                                @endif
                             </p>
 
                             <p>
@@ -154,15 +158,10 @@
             <hr>
 
             @php
-
-                $inscrito = $curso
-                    ->inscripciones()
-                    ->where(
-                        'alumno_id',
-                        auth()->id()
-                    )
+                $inscrito = $curso->inscripciones()
+                    ->where('alumno_id', auth()->id())
+                    ->whereIn('estado', \App\Models\Inscripcion::ESTADOS_ACTIVOS)
                     ->exists();
-
             @endphp
 
             @if($inscrito)

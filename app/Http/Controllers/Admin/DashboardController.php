@@ -1,47 +1,44 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Models\User;
+
 use App\Models\Curso;
+use App\Models\Inscripcion;
+use App\Models\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Role;
 
 class DashboardController extends Controller
 {
     public function index()
-{
-    $totalUsuarios = User::count();
+    {
+        $rolAlumno = Role::where('nombre', 'Alumno')->value('id');
+        $rolMaestro = Role::where('nombre', 'Maestro')->value('id');
 
-    $totalAlumnos = User::where(
-        'rol_id',
-        3
-    )->count();
+        $totalUsuarios = User::count();
+        $totalAlumnos = User::where('rol_id', $rolAlumno)->count();
+        $totalMaestros = User::where('rol_id', $rolMaestro)->count();
+        $totalCursos = Curso::count();
 
-    $totalMaestros = User::where(
-        'rol_id',
-        2
-    )->count();
+        $totalInscripciones = Inscripcion::count();
+        $inscripcionesPendientes = Inscripcion::where('estado', 'Pendiente')->count();
+        $inscripcionesAprobadas = Inscripcion::where('estado', 'Aprobado')->count();
+        $listaEspera = Inscripcion::where('estado', 'Lista Espera')->count();
 
-    $totalCursos = Curso::count();
+        $ultimosUsuarios = User::latest()->take(5)->get();
+        $ultimosCursos = Curso::latest()->take(5)->get();
 
-    $ultimosUsuarios = User::latest()
-        ->take(5)
-        ->get();
-
-    $ultimosCursos = Curso::latest()
-        ->take(5)
-        ->get();
-
-    return view(
-        'admin.dashboard',
-        compact(
+        return view('admin.dashboard', compact(
             'totalUsuarios',
             'totalAlumnos',
             'totalMaestros',
             'totalCursos',
+            'totalInscripciones',
+            'inscripcionesPendientes',
+            'inscripcionesAprobadas',
+            'listaEspera',
             'ultimosUsuarios',
             'ultimosCursos'
-        )
-    );
-}
+        ));
+    }
 }

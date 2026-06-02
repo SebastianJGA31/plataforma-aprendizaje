@@ -51,6 +51,13 @@ class StoreUserRequest extends FormRequest
             'rol_id' => [
                 'required'
             ],
+
+            'carrera_id' => [
+                'required_if:rol_id,3',
+                'nullable',
+                'exists:carreras,id',
+            ],
+
             'semestre' => [
                     'required_if:rol_id,3',
                     'nullable',
@@ -88,6 +95,9 @@ class StoreUserRequest extends FormRequest
             'password.min' => 'La contraseña debe tener mínimo 6 caracteres.',
 
             'rol_id.required' => 'Debe seleccionar un rol para el usuario.',
+
+            'carrera_id.required_if' => 'La carrera es obligatoria para alumnos.',
+            'carrera_id.exists' => 'La carrera seleccionada no es válida.',
 
             'telefono.required' => 'El teléfono es obligatorio.',
             'telefono.numeric' => 'El teléfono debe contener solo números.',

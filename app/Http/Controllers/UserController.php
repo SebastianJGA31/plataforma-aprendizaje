@@ -44,7 +44,9 @@ class UserController extends Controller
 
             }
         )
-        ->get();
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
 
     $roles = Role::all();
 

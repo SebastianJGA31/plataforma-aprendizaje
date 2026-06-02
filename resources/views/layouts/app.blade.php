@@ -44,6 +44,16 @@
                             📚 Cursos
                         </a>
                     </li>
+                    <li class="nav-item mb-2">
+                        <a href="{{ route('carreras.index') }}" class="nav-link text-white">
+                            🎓 Carreras
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="{{ route('admin.inscripciones.index') }}" class="nav-link text-white">
+                            📝 Inscripciones
+                        </a>
+                    </li>
                 @endif
 
                 @if(Auth::user()->role->nombre == 'Maestro')
@@ -53,12 +63,12 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a href="#" class="nav-link text-white">
+                        <a href="{{ route('maestro.cursos.index') }}" class="nav-link text-white">
                             📚 Mis Cursos
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a href="{{ route('maestro.inscripciones.index') }}"" class="nav-link text-white">
+                        <a href="{{ route('maestro.inscripciones.index') }}" class="nav-link text-white">
                             📝 Inscripciones
                         </a>
                     </li>

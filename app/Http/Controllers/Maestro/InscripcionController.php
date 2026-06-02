@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Maestro;
 
 use App\Http\Controllers\Controller;
+use App\Models\Curso;
 use App\Models\Inscripcion;
 
 class InscripcionController extends Controller
@@ -11,113 +12,73 @@ class InscripcionController extends Controller
     {
         $maestroId = auth()->id();
 
-        $inscripciones = Inscripcion::with([
-                'alumno',
-                'curso'
-            ])
-            ->whereHas(
-                'curso',
-                function ($query)
-                use ($maestroId) {
-
-                    $query->where(
-                        'instructor_id',
-                        $maestroId
-                    );
-                }
-            )
-            ->latest()
+        $cursos = Curso::where('instructor_id', $maestroId)
+            ->orderBy('titulo')
             ->get();
 
-        return view(
-            'maestro.inscripciones.index',
-            compact('inscripciones')
-        );
+        $inscripciones = Inscripcion::with(['alumno', 'curso'])
+            ->whereHas('curso', fn ($query) => $query->where('instructor_id', $maestroId))
+            ->when(request('curso'), fn ($query) => $query->where('curso_id', request('curso')))
+            ->when(request('estado'), fn ($query) => $query->where('estado', request('estado')))
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('maestro.inscripciones.index', compact('inscripciones', 'cursos'));
     }
 
     public function aprobar(Inscripcion $inscripcion)
-{
-    $curso = $inscripcion->curso;
-
-    $aprobados = $curso
-        ->inscripciones()
-        ->where(
-            'estado',
-            'Aprobado'
-        )
-        ->count();
-
-    if(
-        $aprobados
-        >=
-        $curso->cupo_maximo
-    )
     {
-        return back()->with(
-            'error',
-            'El curso ya alcanzó su cupo máximo.'
-        );
+        $this->authorizeInscripcion($inscripcion);
+
+        $curso = $inscripcion->curso;
+
+        $aprobados = $curso->inscripciones()
+            ->where('estado', 'Aprobado')
+            ->count();
+
+        if ($aprobados >= $curso->cupo_maximo) {
+            return back()->with('error', 'El curso ya alcanzó su cupo máximo.');
+        }
+
+        $inscripcion->update(['estado' => 'Aprobado']);
+
+        return back()->with('success', 'Inscripción aprobada.');
     }
 
-    $inscripcion->update([
-
-        'estado' => 'Aprobado'
-
-    ]);
-
-    return back()->with(
-        'success',
-        'Inscripción aprobada.'
-    );
-}
-public function rechazar(Inscripcion $inscripcion)
-{
-    $inscripcion->update([
-
-        'estado' => 'Rechazado'
-
-    ]);
-
-    return back()->with(
-        'success',
-        'Inscripción rechazada.'
-    );
-}
-public function darBaja(
-    Inscripcion $inscripcion
-)
-{
-    $inscripcion->update([
-
-        'estado' => 'Baja'
-
-    ]);
-
-    $curso = $inscripcion->curso;
-
-    $siguiente = $curso
-        ->inscripciones()
-        ->where(
-            'estado',
-            'Lista Espera'
-        )
-        ->orderBy(
-            'fecha_inscripcion'
-        )
-        ->first();
-
-    if($siguiente)
+    public function rechazar(Inscripcion $inscripcion)
     {
-        $siguiente->update([
+        $this->authorizeInscripcion($inscripcion);
 
-            'estado' => 'Pendiente'
+        $inscripcion->update(['estado' => 'Rechazado']);
 
-        ]);
+        return back()->with('success', 'Inscripción rechazada.');
     }
 
-    return back()->with(
-        'success',
-        'Alumno dado de baja y se liberó un lugar.'
-    );
-}
+    public function darBaja(Inscripcion $inscripcion)
+    {
+        $this->authorizeInscripcion($inscripcion);
+
+        $inscripcion->update(['estado' => 'Baja']);
+
+        $curso = $inscripcion->curso;
+
+        $siguiente = $curso->inscripciones()
+            ->where('estado', 'Lista Espera')
+            ->orderBy('fecha_inscripcion')
+            ->first();
+
+        if ($siguiente) {
+            $siguiente->update(['estado' => 'Pendiente']);
+        }
+
+        return back()->with('success', 'Alumno dado de baja y se liberó un lugar.');
+    }
+
+    private function authorizeInscripcion(Inscripcion $inscripcion): void
+    {
+        if ($inscripcion->curso->instructor_id !== auth()->id()) {
+            abort(403, 'No tienes permiso para gestionar esta inscripción.');
+        }
+    }
 }

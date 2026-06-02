@@ -1,59 +1,122 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Plataforma de Aprendizaje y Gestión de Cursos
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web universitario desarrollado con **Laravel 12**, **Bootstrap 5**, **MySQL** y **Breeze**.
 
-## About Laravel
+Gestiona tres roles: **Administrador**, **Maestro** y **Alumno**, con cursos, carreras, inscripciones y control de cupos.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requisitos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.2+
+- Composer
+- MySQL / MariaDB
+- Node.js y npm (para assets con Vite)
+- Extensiones PHP: `pdo_mysql`, `mbstring`, `openssl`, `fileinfo`
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Instalación
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+# 1. Clonar o copiar el proyecto
+cd plataforma-aprendizaje
 
-## Laravel Sponsors
+# 2. Dependencias
+composer install
+npm install
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# 3. Entorno
+copy .env.example .env   # Windows
+# cp .env.example .env   # Linux/Mac
+php artisan key:generate
 
-### Premium Partners
+# 4. Configurar .env — base de datos
+# DB_DATABASE=plataforma_aprendizaje
+# DB_USERNAME=root
+# DB_PASSWORD=
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# 5. Migraciones y datos demo
+php artisan migrate --seed
 
-## Contributing
+# 6. Enlace para imágenes de cursos
+php artisan storage:link
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 7. Compilar assets (opcional en desarrollo)
+npm run build
 
-## Code of Conduct
+# 8. Servidor
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Abrir: **http://127.0.0.1:8000**
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Usuarios de prueba
 
-## License
+| Rol | Correo | Contraseña |
+|-----|--------|------------|
+| Administrador | admin@plataforma.com | admin123 |
+| Maestro | maestro1@plataforma.com | maestro123 |
+| Maestro | maestro2@plataforma.com | maestro123 |
+| Alumno | alumno1@plataforma.com | alumno123 |
+| Alumno | alumno2@plataforma.com | alumno123 |
+| Alumno | alumno3@plataforma.com | alumno123 |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+También puedes registrar nuevos alumnos desde `/register`.
+
+---
+
+## Guion de demostración (5 minutos)
+
+1. Abrir la página de inicio (`/`) — presentar la plataforma.
+2. Iniciar sesión como **Administrador** → dashboard, usuarios, carreras, cursos, inscripciones.
+3. Cerrar sesión → entrar como **Alumno** (`alumno1`) → ver cursos, cupos disponibles, inscribirse.
+4. Entrar como **Maestro** (`maestro1`) → Mis Cursos → aprobar/rechazar inscripciones pendientes.
+5. Mostrar lista de espera y promoción automática al dar de baja un alumno aprobado.
+
+---
+
+## Estructura principal
+
+```
+app/Http/Controllers/
+├── Admin/          Dashboard, Inscripciones
+├── Maestro/        Dashboard, Cursos, Inscripciones
+├── Alumno/         Dashboard, Cursos, Inscripciones
+├── CursoController.php
+├── UserController.php
+└── CarreraController.php
+
+app/Models/
+├── User, Role, Carrera, Curso, Inscripcion
+```
+
+---
+
+## Funcionalidades
+
+- Autenticación y registro de alumnos con carrera
+- Middleware por rol con redirección automática
+- CRUD de usuarios, cursos y carreras (admin)
+- Cursos filtrados por carrera del alumno
+- Inscripciones con estados: Pendiente, Aprobado, Rechazado, Lista Espera, Baja
+- Control de cupo y promoción desde lista de espera
+- Paginación y filtros en listados principales
+
+---
+
+## Comandos útiles
+
+```bash
+php artisan migrate:fresh --seed   # Reiniciar BD con datos demo
+php artisan test                   # Ejecutar pruebas
+php artisan route:list             # Ver rutas
+```
+
+---
+
+## Autor
+
+Proyecto académico — Plataforma de Aprendizaje ITCV.

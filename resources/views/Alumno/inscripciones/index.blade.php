@@ -77,21 +77,19 @@
 
                             @elseif($inscripcion->estado == 'Lista Espera')
 
-                                <span
-                                    class="badge bg-info">
+                                <span class="badge bg-info">Lista Espera</span>
 
-                                    Lista Espera
+                            @elseif($inscripcion->estado == 'Baja')
 
-                                </span>
+                                <span class="badge bg-dark">Baja</span>
+
+                            @elseif($inscripcion->estado == 'Rechazado')
+
+                                <span class="badge bg-danger">Rechazado</span>
 
                             @else
 
-                                <span
-                                    class="badge bg-danger">
-
-                                    Rechazado
-
-                                </span>
+                                <span class="badge bg-secondary">{{ $inscripcion->estado }}</span>
 
                             @endif
 
@@ -122,6 +120,8 @@
                 </tbody>
 
             </table>
+
+            {{ $inscripciones->links() }}
 
         </div>
 

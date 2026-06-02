@@ -2,61 +2,51 @@
     <div class="container mt-4">
         <h2>Cursos Disponibles</h2>
 
-        <div class="row">
+        <div class="row mt-3">
             @forelse($cursos as $curso)
-                <div class="col-md-4 mb-4"> <div class="card shadow h-100">
-                        <div class="card-body">
-
+                @php
+                    $cuposDisponibles = max(0, $curso->cupo_maximo - $curso->aprobados_count);
+                @endphp
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow h-100">
                         @if($curso->imagen)
-
-<img
-    src="{{ asset(
-        'storage/'.$curso->imagen
-    ) }}"
-    class="card-img-top"
-    style="
-        height:220px;
-        object-fit:cover;
-    ">
-
-@endif
+                            <img src="{{ asset('storage/'.$curso->imagen) }}" class="card-img-top"
+                                style="height:220px; object-fit:cover;" alt="{{ $curso->titulo }}">
+                        @else
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
+                                style="height:220px;">
+                                <span>Sin imagen</span>
+                            </div>
+                        @endif
+                        <div class="card-body">
                             <h5 class="card-title">{{ $curso->titulo }}</h5>
-                            
-                            <p class="text-muted">
-                                {{ Str::limit($curso->descripcion, 100) }}
-                            </p>
+                            <p class="text-muted">{{ Str::limit($curso->descripcion, 100) }}</p>
 
                             <div class="mb-2">
                                 <span class="badge bg-primary">{{ $curso->tipo }}</span>
                                 <span class="badge bg-info">{{ $curso->modalidad }}</span>
                             </div>
 
-                            <div class="mb-2">
-                                @if($curso->estado == 'Activo')
-                                    <span class="badge bg-success">Activo</span>
-                                @elseif($curso->estado == 'Cerrado')
-                                    <span class="badge bg-warning text-dark">Cerrado</span>
-                                @elseif($curso->estado == 'Finalizado')
-                                    <span class="badge bg-secondary">Finalizado</span>
-                                @else
-                                    <span class="badge bg-danger">Cancelado</span>
-                                @endif
-                            </div>
-
                             <p><strong>Instructor:</strong> {{ $curso->instructor->name }}</p>
-                            <p><strong>Cupo:</strong> {{ $curso->cupo_maximo }}</p>
+                            <p><strong>Cupo total:</strong> {{ $curso->cupo_maximo }}</p>
+                            <p>
+                                <strong>Cupos disponibles:</strong>
+                                @if($cuposDisponibles > 0)
+                                    <span class="badge bg-success">{{ $cuposDisponibles }}</span>
+                                @else
+                                    <span class="badge bg-danger">Lleno — Lista de espera</span>
+                                @endif
+                            </p>
                             <p><strong>Inicio:</strong> {{ $curso->fecha_inicio }}</p>
                         </div>
 
                         <div class="card-footer bg-white">
-                            <a href="{{ route(
-    'alumno.cursos.show',
-    $curso
-) }}" class="btn btn-primary">Detalles</a>
+                            <a href="{{ route('alumno.cursos.show', $curso) }}" class="btn btn-primary">Detalles</a>
 
                             @php
                                 $inscrito = $curso->inscripciones()
                                     ->where('alumno_id', auth()->id())
+                                    ->whereIn('estado', \App\Models\Inscripcion::ESTADOS_ACTIVOS)
                                     ->exists();
                             @endphp
 
@@ -72,9 +62,7 @@
                 </div>
             @empty
                 <div class="col-12">
-                    <div class="alert alert-info">
-                        No hay cursos disponibles.
-                    </div>
+                    <div class="alert alert-info">No hay cursos disponibles para tu carrera.</div>
                 </div>
             @endforelse
         </div>

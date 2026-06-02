@@ -109,6 +109,46 @@
 
     </div>
 
+    <div class="row mt-2">
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info shadow">
+                <div class="card-body">
+                    <h5>Inscripciones</h5>
+                    <h2>{{ $totalInscripciones }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning shadow">
+                <div class="card-body">
+                    <h5>Pendientes</h5>
+                    <h2>{{ $inscripcionesPendientes }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body">
+                    <h5>Aprobadas</h5>
+                    <h2>{{ $inscripcionesAprobadas }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-secondary shadow">
+                <div class="card-body">
+                    <h5>Lista de Espera</h5>
+                    <h2>{{ $listaEspera }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <div class="row mt-4">
 
         <div class="col-md-6">
@@ -172,10 +212,9 @@
 
             <div class="card shadow">
 
-                <div class="card-header">
-
-                    Últimos Cursos
-
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Últimos Cursos</span>
+                    <a href="{{ route('admin.inscripciones.index') }}" class="btn btn-sm btn-primary">Ver inscripciones</a>
                 </div>
 
                 <div class="card-body">

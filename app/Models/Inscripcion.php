@@ -6,17 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inscripcion extends Model
 {
+    public const ESTADOS_ACTIVOS = [
+        'Pendiente',
+        'Aprobado',
+        'Lista Espera',
+    ];
+
     protected $table = 'inscripciones';
+
     protected $fillable = [
+        'alumno_id',
+        'curso_id',
+        'estado',
+        'fecha_inscripcion',
+        'motivo',
+        'experiencia',
+    ];
 
-    'alumno_id',
-    'curso_id',
-    'estado',
-    'fecha_inscripcion',
-    'motivo',
-    'experiencia'
-
-];
+    protected function casts(): array
+    {
+        return [
+            'fecha_inscripcion' => 'datetime',
+        ];
+    }
 
     public function alumno()
 {

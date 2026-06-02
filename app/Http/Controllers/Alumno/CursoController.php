@@ -1,59 +1,35 @@
 <?php
 
 namespace App\Http\Controllers\Alumno;
-use Illuminate\Support\Facades\Auth;
+
 use App\Http\Controllers\Controller;
 use App\Models\Curso;
+use Illuminate\Support\Facades\Auth;
 
 class CursoController extends Controller
 {
     public function index()
     {
-        $carreraId =
-$carreraId = Auth::user()->carrera_id;
-        $cursos = Curso::with([
-                'instructor',
-                'carreras'
+        $carreraId = Auth::user()->carrera_id;
+
+        $cursos = Curso::with(['instructor', 'carreras'])
+            ->withCount([
+                'inscripciones as aprobados_count' => fn ($q) => $q->where('estado', 'Aprobado'),
             ])
-            ->where(function ($query)
-                use ($carreraId) {
-
-                $query->where(
-                    'todas_las_carreras',
-                    true
-                )
-
-                ->orWhereHas(
-                    'carreras',
-                    function ($q)
-                    use ($carreraId) {
-
-                        $q->where(
-                            'carreras.id',
-                            $carreraId
-                        );
-                    }
-                );
-            })
-            ->where(
-                'estado',
-                'Activo'
-            )
+            ->disponibleParaCarrera($carreraId)
             ->get();
 
-return view('alumno.index', compact('cursos')); // 🚨 Quitamos el ".cursos"
+        return view('alumno.index', compact('cursos'));
     }
 
     public function show(Curso $curso)
-{
-    $curso->load([
-        'instructor',
-        'carreras'
-    ]);
+    {
+        if (!$curso->estaDisponibleParaCarrera(Auth::user()->carrera_id)) {
+            abort(403, 'No tienes acceso a este curso.');
+        }
 
-    return view(
-        'alumno.show',
-        compact('curso')
-    );
-}
+        $curso->load(['instructor', 'carreras']);
+
+        return view('alumno.show', compact('curso'));
+    }
 }

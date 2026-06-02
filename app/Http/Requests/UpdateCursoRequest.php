@@ -2,53 +2,39 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCursoRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        // 🚨 MUY IMPORTANTE: Cambiado a true para que Laravel te permita usarlo
-        return true; 
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     */
     public function rules(): array
     {
+        $rolMaestro = Role::where('nombre', 'Maestro')->value('id');
+
         return [
             'titulo' => ['required', 'max:255'],
             'descripcion' => ['required'],
             'tipo' => ['required'],
             'modalidad' => ['required'],
-            'instructor_id' => ['required'],
+            'instructor_id' => [
+                'required',
+                Rule::exists('users', 'id')->where('rol_id', $rolMaestro),
+            ],
             'cupo_maximo' => ['required', 'integer', 'min:1'],
-            
-            // 🔓 Fechas libres (sin el 'after_or_equal:today') para poder editar libremente
-            'fecha_inicio' => ['required', 'date'], 
+            'fecha_inicio' => ['required', 'date'],
             'fecha_fin' => ['required', 'date', 'after:fecha_inicio'],
-
-            // 🔀 Validación cruzada de carreras
             'todas_las_carreras' => ['required_without:carreras', 'boolean'],
             'carreras' => ['required_without:todas_las_carreras', 'array', 'min:1'],
-
-            'imagen' => [
-    'nullable',
-    'image',
-    'mimes:jpg,jpeg,png,webp',
-    'max:2048'
-],
+            'imagen' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
-
     }
 
-    /**
-     * Get the error messages for the defined validation rules.
-     */
     public function messages(): array
     {
         return [
@@ -58,6 +44,7 @@ class UpdateCursoRequest extends FormRequest
             'tipo.required' => 'Debe seleccionar un tipo de evento.',
             'modalidad.required' => 'Debe seleccionar una modalidad.',
             'instructor_id.required' => 'Debe seleccionar un instructor.',
+            'instructor_id.exists' => 'El instructor seleccionado debe ser un maestro válido.',
             'cupo_maximo.required' => 'Debe indicar el cupo.',
             'cupo_maximo.integer' => 'El cupo máximo debe ser un número entero.',
             'cupo_maximo.min' => 'El cupo debe ser mayor a 0.',
@@ -66,8 +53,6 @@ class UpdateCursoRequest extends FormRequest
             'fecha_fin.required' => 'La fecha final es obligatoria.',
             'fecha_fin.date' => 'La fecha final debe ser una fecha válida.',
             'fecha_fin.after' => 'La fecha final debe ser posterior a la fecha inicial.',
-            
-            // Mensajes para las carreras
             'todas_las_carreras.required_without' => 'Debe marcar "Disponible para todas las carreras" o seleccionar al menos una de la lista.',
             'carreras.required_without' => 'Debe seleccionar al menos una carrera o marcar la casilla de arriba.',
         ];

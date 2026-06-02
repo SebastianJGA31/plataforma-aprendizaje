@@ -17,7 +17,7 @@
             <p class="text-muted">
 
     Total de usuarios:
-    {{ $usuarios->count() }}
+    {{ $usuarios->total() }}
 
 </p>
 
@@ -247,6 +247,8 @@
                     </tbody>
 
                 </table>
+
+                {{ $usuarios->links() }}
 
             </div>
 

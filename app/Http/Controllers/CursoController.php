@@ -4,12 +4,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCursoRequest;
 use App\Models\User;
 use App\Models\Curso;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Models\Carrera;
 use App\Http\Requests\UpdateCursoRequest;
 
 class CursoController extends Controller
 {
+    private function getMaestros()
+    {
+        $rolMaestro = Role::where('nombre', 'Maestro')->value('id');
+
+        return User::where('rol_id', $rolMaestro)->orderBy('name')->get();
+    }
     /**
      * Display a listing of the resource.
      */
@@ -70,7 +77,8 @@ class CursoController extends Controller
         )
 
         ->latest()
-        ->get();
+        ->paginate(10)
+        ->withQueryString();
 
     return view(
         'cursos.index',
@@ -82,7 +90,7 @@ class CursoController extends Controller
 
    public function create()
 {
-    $maestros = User::whereIn('rol_id', [1, 2])->get();
+    $maestros = $this->getMaestros();
 
     $carreras = Carrera::all();
 
@@ -171,10 +179,7 @@ if (!$request->has('todas_las_carreras')) {
      */
     public function show(Curso $curso)
 {
-    $maestros = User::whereIn(
-        'rol_id',
-        [1,2]
-    )->get();
+    $maestros = $this->getMaestros();
 
     $carreras = Carrera::all();
 
@@ -195,10 +200,7 @@ if (!$request->has('todas_las_carreras')) {
      */
     public function edit(Curso $curso)
 {
-    $maestros = User::whereIn(
-        'rol_id',
-        [1,2]
-    )->get();
+    $maestros = $this->getMaestros();
 
     $carreras = Carrera::all();
 

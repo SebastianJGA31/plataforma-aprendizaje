@@ -28,14 +28,8 @@
 
             </p>
             @if(session('error'))
-
-<div class="alert alert-danger">
-
-    {{ session('error') }}
-
-</div>
-
-@endif
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
 
             <hr>
             
@@ -60,8 +54,11 @@
                     <textarea
                         name="motivo"
                         rows="4"
-                        class="form-control"
-                        required></textarea>
+                        class="form-control @error('motivo') is-invalid @enderror"
+                        required>{{ old('motivo') }}</textarea>
+                    @error('motivo')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
 
                 </div>
 
@@ -76,7 +73,10 @@
                     <textarea
                         name="experiencia"
                         rows="4"
-                        class="form-control"></textarea>
+                        class="form-control @error('experiencia') is-invalid @enderror">{{ old('experiencia') }}</textarea>
+                    @error('experiencia')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
 
                 </div>
 
