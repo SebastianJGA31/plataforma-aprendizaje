@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Maestro;
 use App\Http\Controllers\Controller;
 use App\Models\Curso;
 use App\Models\Inscripcion;
+use Illuminate\Support\Facades\Gate;
 
 class InscripcionController extends Controller
 {
@@ -29,7 +30,7 @@ class InscripcionController extends Controller
 
     public function aprobar(Inscripcion $inscripcion)
     {
-        $this->authorize('gestionar', $inscripcion);
+        Gate::authorize('gestionar', $inscripcion);
 
         $curso = $inscripcion->curso;
 
@@ -48,7 +49,7 @@ class InscripcionController extends Controller
 
     public function rechazar(Inscripcion $inscripcion)
     {
-        $this->authorize('gestionar', $inscripcion);
+        Gate::authorize('gestionar', $inscripcion);
 
         $inscripcion->update(['estado' => 'Rechazado']);
 
@@ -57,7 +58,7 @@ class InscripcionController extends Controller
 
     public function darBaja(Inscripcion $inscripcion)
     {
-        $this->authorize('gestionar', $inscripcion);
+        Gate::authorize('gestionar', $inscripcion);
 
         $inscripcion->update(['estado' => 'Baja']);
 

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 use App\Models\Curso;
 use App\Models\Inscripcion;
 
 class InscripcionController extends Controller
+
 {
+    use AuthorizesRequests;
     public function index()
     {
         $inscripciones = Inscripcion::with(['alumno', 'curso.instructor'])
