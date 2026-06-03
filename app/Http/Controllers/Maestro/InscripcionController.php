@@ -29,7 +29,7 @@ class InscripcionController extends Controller
 
     public function aprobar(Inscripcion $inscripcion)
     {
-        $this->authorizeInscripcion($inscripcion);
+        $this->authorize('gestionar', $inscripcion);
 
         $curso = $inscripcion->curso;
 
@@ -48,7 +48,7 @@ class InscripcionController extends Controller
 
     public function rechazar(Inscripcion $inscripcion)
     {
-        $this->authorizeInscripcion($inscripcion);
+        $this->authorize('gestionar', $inscripcion);
 
         $inscripcion->update(['estado' => 'Rechazado']);
 
@@ -57,7 +57,7 @@ class InscripcionController extends Controller
 
     public function darBaja(Inscripcion $inscripcion)
     {
-        $this->authorizeInscripcion($inscripcion);
+        $this->authorize('gestionar', $inscripcion);
 
         $inscripcion->update(['estado' => 'Baja']);
 
@@ -73,12 +73,5 @@ class InscripcionController extends Controller
         }
 
         return back()->with('success', 'Alumno dado de baja y se liberó un lugar.');
-    }
-
-    private function authorizeInscripcion(Inscripcion $inscripcion): void
-    {
-        if ($inscripcion->curso->instructor_id !== auth()->id()) {
-            abort(403, 'No tienes permiso para gestionar esta inscripción.');
-        }
     }
 }
